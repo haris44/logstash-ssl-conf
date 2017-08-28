@@ -19,7 +19,7 @@ read -p "CA Name : " name
 
 mkdir ${name}
 cp ${path} ${name}/
-mkdir ${name}/{private,newcerts,csr,certs]}
+mkdir ${name}/{private,newcerts,csr,certs}
 cd ${name}
 
 echo 00 > serial
