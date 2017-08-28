@@ -1,32 +1,25 @@
 #!/bin/bash
 echo 
 echo -------------------------------
-echo SSL/JKS Generation by haris44
+echo" SSL/JKS Generation by haris44 & Bastien BALAUD"
 echo https://github.com/haris44/logstash-ssl-conf
 echo -------------------------------
 echo All data must be on lowercase 
 echo You must have read/write rights on this folder
+echo "Not working but it's really fun to debug bash"
 echo -------------------------------
-echo 
-echo openssl.cnf path ?
-read path 
-echo Country ?
-read country
-echo Location ?
-read location
-echo Company ?
-read company
-echo Password ?
-read -s password
-echo CA Name ?
-read name
+echo
+read -p "Openssl.cnf path : " path 
+read -p "Country : "  country
+read -p "Location : "  location
+read -p "Company : " company
+read -p "Password : " -s password
+echo
+read -p "CA Name : " name
 
 mkdir ${name}
 cp ${path} ${name}/
-mkdir ${name}/certs
-mkdir ${name}/csr
-mkdir ${name}/newcerts
-mkdir ${name}/private
+mkdir ${name}/{private,newcerts,csr,certs}
 cd ${name}
 
 echo 00 > serial
