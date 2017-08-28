@@ -6,7 +6,7 @@ echo https://github.com/haris44/logstash-ssl-conf
 echo -------------------------------
 echo All data must be on lowercase 
 echo You must have read/write rights on this folder
-echo "Not works but it's really fun to debug bash"
+echo "Not working but it's really fun to debug bash"
 echo -------------------------------
 echo
 read -p "Openssl.cnf path : " path 
