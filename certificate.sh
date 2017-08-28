@@ -1,4 +1,3 @@
-
 #!/bin/bash
 echo 
 echo -------------------------------
@@ -10,8 +9,7 @@ echo You must have read/write rights on this folder
 echo -------------------------------
 echo 
 echo openssl.cnf path ?
-read path
-echo 
+read path 
 echo Country ?
 read country
 echo Location ?
@@ -19,7 +17,7 @@ read location
 echo Company ?
 read company
 echo Password ?
-read password
+read -s password
 echo CA Name ?
 read name
 
