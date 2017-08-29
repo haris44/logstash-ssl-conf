@@ -8,14 +8,11 @@ echo All data must be on lowercase
 echo You must have read/write rights on this folder
 echo -------------------------------
 
-echo openssl.cnf path ?
-read openssl 
-echo path where new certificate will be generate ? 
-read path 
-echo password ?
-read -s password
-echo CA Name ?
-read name
+read -p "Openssl.cnf path : " openssl 
+read -p "Path where new certificate will be generate : " path 
+read -s -p "Password : " password
+echo
+read -p "CA name : " name
 
 mkdir ${path}
 cp ${openssl} ${path}/openssl.cnf
