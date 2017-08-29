@@ -7,79 +7,25 @@ echo -------------------------------
 echo All data must be on lowercase 
 echo You must have read/write rights on this folder
 echo -------------------------------
-echo 
+
 echo openssl.cnf path ?
+read openssl 
+echo path where new certificate will be generate ? 
 read path 
-echo Country ?
-read country
-echo Location ?
-read location
-echo Company ?
-read company
-echo Password ?
+echo password ?
 read -s password
 echo CA Name ?
 read name
 
-mkdir ${name}
-cp ${path} ${name}/
-mkdir ${name}/certs
-mkdir ${name}/csr
-mkdir ${name}/newcerts
-mkdir ${name}/private
-cd ${name}
+mkdir ${path}
+cp ${openssl} ${path}/openssl.cnf
+cd ${path}
 
-echo 00 > serial
-echo 00 > crlnumber
-touch index.txt
+# Generate .crt and .key
+# ======================
+openssl req -x509 -batch -nodes -days 3650 -newkey rsa:2048 -keyout ${name}.key -out ${name}.crt -config openssl.cnf
 
-subjectCN="/C=${country}/L=${location}/O=${company} CA/CN=${company}.${country}"
-subjectCl="/C=${country}/L=${location}/O=${company}/CN=client"
-subjectSe="/C=${country}/L=${location}/O=${company}/CN=server"
-
-# Create CA private key
-openssl genrsa -des3 -passout pass:${password} -out private/${name}.key 2048
-
-# Remove passphrase 
-openssl rsa -passin pass:${password} -in private/${name}.key -out private/${name}.key
-
-# Create CA self-signed certificate
-openssl req -config openssl.cnf -new -x509 -subj "${subjectCN}" -days 999 -key private/${name}.key -out certs/${name}.crt
-
-
-# Create private key for the server
-openssl genrsa -des3 -passout pass:${password} -out private/server.key 2048
-
-# Remove passphrase 
-openssl rsa -passin pass:${password} -in private/server.key -out private/server.key
-
-# Create CSR for the server server
-openssl req -config openssl.cnf -new -subj "${subjectSe}" -key private/server.key -out csr/server.csr
-
-# Create certificate for the server server
-openssl ca -batch -config openssl.cnf -days 999 -in csr/server.csr -out certs/server.crt -keyfile private/${name}.key -cert certs/${name}.crt -policy policy_anything
-
-
-# Create private key for a client
-openssl genrsa -des3 -passout pass:${password} -out private/client.key 2048
- 
-# Remove passphrase 
-openssl rsa -passin pass:${password} -in private/client.key -out private/client.key
- 
-# Create CSR for the client.
-openssl req -config openssl.cnf -new -subj "${subjectCl}" -key private/client.key -out csr/client.csr
- 
-# Create client certificate.
-openssl ca -batch -config openssl.cnf -days 999 -in csr/client.csr -out certs/client.crt -keyfile private/${name}.key -cert certs/${name}.crt -policy policy_anything
-
-# create JKS
-
-mkdir jks
-
-keytool -genkey -alias temp -keystore jks/${name}.jks -storepass ${password}
-
-keytool -delete -alias temp -keystore jks/${name}.jks -storepass ${password}
-
-keytool -list -keystore jks/${name}.jks -storepass ${password}
-
-keytool -import -alias alias -file certs/client.crt -keypass keypass -keystore jks/${name}.jks -storepass ${password}
+# Create JKS 
+# ======================
+keytool -genkey -alias temp -keystore ${name}.jks -storepass ${password}
+keytool -import -alias alias -file ${name}.crt -keypass keypass -keystore ${name}.jks-storepass ${password}
